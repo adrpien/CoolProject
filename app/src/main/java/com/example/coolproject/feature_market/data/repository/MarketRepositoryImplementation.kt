@@ -2,8 +2,10 @@ package com.example.coolproject.feature_market.data.repository
 
 import com.adrpien.dictionaryapp.core.util.Resource
 import com.adrpien.dictionaryapp.core.util.ResourceState
+import com.example.coolproject.feature_market.data.csv.CSVParser
 import com.example.coolproject.feature_market.data.local.MarketDatabase
 import com.example.coolproject.feature_market.data.mappers.toCompany
+import com.example.coolproject.feature_market.data.mappers.toCompanyEntity
 import com.example.coolproject.feature_market.data.remote.AlphaVantageApi
 import com.example.coolproject.feature_market.data.remote.AlphaVantageApi.Companion.API_KEY
 import com.example.coolproject.feature_market.domain.model.Company
@@ -20,7 +22,8 @@ import javax.inject.Singleton
 @Singleton
 class MarketRepositoryImplementation @Inject constructor(
     val database: MarketDatabase,
-    val api: AlphaVantageApi
+    val api: AlphaVantageApi,
+    val parser: CSVParser<Company>
 ): MarketRepository {
 
 
@@ -42,8 +45,8 @@ class MarketRepositoryImplementation @Inject constructor(
             )
         } else {
            val apiCompanyList = try {
-               val response = api.getCompanyList()
-               val csvReader=  CSVReader(InputStreamReader(response.byteStream()))
+               val response = api.getCompanyList().byteStream()
+                parser.parse(response)
            } catch (e: IOException) {
                e.printStackTrace()
                emit(
@@ -53,6 +56,7 @@ class MarketRepositoryImplementation @Inject constructor(
                        "IOException"
                    )
                )
+               null
            } catch (e: HttpException) {
                emit(
                    Resource(
@@ -61,7 +65,21 @@ class MarketRepositoryImplementation @Inject constructor(
                        "HTTPException"
                    )
                )
+               null
            }
+
+            apiCompanyList?.let { companyList ->
+                database.dao.clearCompanyList()
+                database.dao.insertCompanyEntity(companyList.map { it.toCompanyEntity()  })
+                emit(
+                    Resource(
+                        ResourceState.SUCCESS,
+                        database.dao.getCompanyList("").map { it.toCompany() },
+                        "IOException"
+                    )
+                )
+
+            }
 
         }
     }

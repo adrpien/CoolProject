@@ -33,6 +33,6 @@ data class Resource <out T>(
 // Status loading is to show progress bar, when our resource is not ready
 enum class ResourceState {
     ERROR,
-    SUCCESS ,
+    SUCCESS,
     LOADING
 }
