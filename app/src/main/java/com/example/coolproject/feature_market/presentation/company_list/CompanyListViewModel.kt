@@ -3,13 +3,11 @@ package com.example.coolproject.feature_market.presentation.company_list
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.adrpien.dictionaryapp.core.util.Resource
 import com.adrpien.dictionaryapp.core.util.ResourceState
 import com.example.coolproject.feature_market.domain.repository.MarketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,9 +20,9 @@ class CompanyListViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    fun onEvent(event: CompanyListingEvent) {
+    fun onEvent(event: CompanyListEvent) {
         when(event) {
-            is CompanyListingEvent.onSearchQueryChange -> {
+            is CompanyListEvent.onSearchQueryChange -> {
                 state.value = state.value.copy(searchQuery = event.query)
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
@@ -36,7 +34,7 @@ class CompanyListViewModel @Inject constructor(
                     }
                 }
             }
-            is CompanyListingEvent.Refresh -> {
+            is CompanyListEvent.Refresh -> {
                 getCompanyList(
                     fetchFromApi = true
                 )

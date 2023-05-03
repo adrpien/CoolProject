@@ -2,14 +2,14 @@ package com.example.coolproject.feature_market.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.coolproject.feature_market.data.local.entities.CompanyEntity
 
 @Dao
 interface MarketDao {
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCompanyEntity(companyEntityList: List<CompanyEntity>)
 
     @Query("DELETE FROM companyentity")

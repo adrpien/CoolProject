@@ -11,7 +11,6 @@ interface AlphaVantageApi {
     suspend fun getCompanyList(
         @Query("apiKey")
         apiKey: String = API_KEY,
-
     ): ResponseBody
 
     companion object {
