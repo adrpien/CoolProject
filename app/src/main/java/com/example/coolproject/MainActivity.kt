@@ -10,7 +10,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraph
 import com.example.coolproject.core.ui.theme.CoolProjectTheme
+import com.example.coolproject.feature_market.presentation.company_list.components.NavGraphs
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,22 +28,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                   DestinationsNavHost(
+                       navGraph = NavGraphs.root
+                   )
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CoolProjectTheme {
-        Greeting("Android")
-    }
-}

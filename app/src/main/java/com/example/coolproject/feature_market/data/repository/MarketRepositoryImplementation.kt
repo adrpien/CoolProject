@@ -5,10 +5,13 @@ import com.adrpien.dictionaryapp.core.util.ResourceState
 import com.example.coolproject.feature_market.data.csv.CSVParser
 import com.example.coolproject.feature_market.data.local.MarketDatabase
 import com.example.coolproject.feature_market.data.mappers.toCompany
+import com.example.coolproject.feature_market.data.mappers.toCompanyDetails
 import com.example.coolproject.feature_market.data.mappers.toCompanyEntity
 import com.example.coolproject.feature_market.data.remote.AlphaVantageApi
 import com.example.coolproject.feature_market.data.remote.AlphaVantageApi.Companion.API_KEY
 import com.example.coolproject.feature_market.domain.model.Company
+import com.example.coolproject.feature_market.domain.model.CompanyDetails
+import com.example.coolproject.feature_market.domain.model.IntradayInfo
 import com.example.coolproject.feature_market.domain.repository.MarketRepository
 import com.opencsv.CSVReader
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +26,9 @@ import javax.inject.Singleton
 class MarketRepositoryImplementation @Inject constructor(
     val database: MarketDatabase,
     val api: AlphaVantageApi,
-    val parser: CSVParser<Company>
+    val companyParser: CSVParser<Company>,
+    val intradayInfoParser: CSVParser<IntradayInfo>
+
 ): MarketRepository {
 
 
@@ -46,7 +51,7 @@ class MarketRepositoryImplementation @Inject constructor(
         } else {
            val apiCompanyList = try {
                val response = api.getCompanyList().byteStream()
-                parser.parse(response)
+                companyParser.parse(response)
            } catch (e: IOException) {
                e.printStackTrace()
                emit(
@@ -81,6 +86,51 @@ class MarketRepositoryImplementation @Inject constructor(
 
             }
 
+        }
+    }
+
+    override suspend fun getCompanyDetails(symbol: String): Resource<CompanyDetails> {
+        return try {
+            val companyDetails = api.getCompanyDetails(symbol = symbol).toCompanyDetails()
+            Resource(ResourceState.SUCCESS, companyDetails, "getCompanyDetails succeed")
+        } catch (e: IOException){
+            e.printStackTrace()
+            Resource(
+                ResourceState.ERROR,
+                null,
+                "IOException"
+            )
+        } catch (e: HttpException) {
+            e.printStackTrace()
+            Resource(
+                ResourceState.ERROR,
+                null,
+                "HTTPException"
+            )
+        }
+    }
+
+    override suspend fun getIntradayInfo(symbol: String): Resource<List<IntradayInfo>> {
+        return try {
+            val response = api.getiIntradayInfo(
+                symbol = symbol
+            )
+            val intradayInfoList = intradayInfoParser.parse(response.byteStream())
+            Resource(ResourceState.SUCCESS, intradayInfoList, "getIntraDayInfo succeed")
+        } catch (e: IOException){
+            e.printStackTrace()
+                Resource(
+                    ResourceState.ERROR,
+                    null,
+                    "IOException"
+                )
+        } catch (e: HttpException) {
+            e.printStackTrace()
+            Resource(
+                ResourceState.ERROR,
+                null,
+                "HTTPException"
+            )
         }
     }
 }

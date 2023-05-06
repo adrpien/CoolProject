@@ -20,6 +20,10 @@ class CompanyListViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
+    init {
+        getCompanyList(" ")
+    }
+
     fun onEvent(event: CompanyListEvent) {
         when(event) {
             is CompanyListEvent.onSearchQueryChange -> {
