@@ -5,6 +5,7 @@ import com.example.coolproject.feature_market.data.csv.CompanyListCsvParser
 import com.example.coolproject.feature_market.data.csv.IntradayInfoCsvParser
 import com.example.coolproject.feature_market.data.repository.MarketRepositoryImplementation
 import com.example.coolproject.feature_market.domain.model.Company
+import com.example.coolproject.feature_market.domain.model.IntradayInfo
 import com.example.coolproject.feature_market.domain.repository.MarketRepository
 import dagger.Binds
 import dagger.Module
@@ -26,7 +27,8 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindIntradayInfoParser(
         intraDayInfoCsvParser: IntradayInfoCsvParser
-    ): CSVParser<IntradayInfoCsvParser>
+    ): CSVParser<IntradayInfo>
+
 
     @Binds
     @Singleton

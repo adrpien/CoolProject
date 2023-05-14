@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.coolproject.feature_market.presentation.company_list.CompanyListViewModel
 import com.example.coolproject.feature_market.presentation.company_list.CompanyListEvent
+import com.example.coolproject.feature_market.presentation.destinations.CompanyDetailsScreenDestination
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -63,7 +64,7 @@ fun CompanyListScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                           // TODO Navigate to details screen
+                                           navigator.navigate(CompanyDetailsScreenDestination(state.value.companyList[index].symbol))
                                 },
                             )
                         if(index < state.value.companyList.size) {

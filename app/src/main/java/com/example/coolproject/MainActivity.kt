@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph
 import com.example.coolproject.core.ui.theme.CoolProjectTheme
-import com.example.coolproject.feature_market.presentation.company_list.components.NavGraphs
+import com.example.coolproject.feature_market.presentation.NavGraphs
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 import dagger.hilt.android.AndroidEntryPoint
