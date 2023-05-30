@@ -9,11 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.time.LocalDate
 import java.time.LocalDateTime
-import javax.inject.Inject
 
-class IntradayInfoCsvParser @Inject constructor(): CSVParser<IntradayInfo> {
+class IntradayInfoCsvParser: CSVParser<IntradayInfo> {
     override suspend fun parse(stream: InputStream): List<IntradayInfo> {
         val csvReader = CSVReader(InputStreamReader(stream))
         return withContext(Dispatchers.IO) {
@@ -29,7 +27,7 @@ class IntradayInfoCsvParser @Inject constructor(): CSVParser<IntradayInfo> {
                     ).toIntradayInfo()
                 }
                 .filter {
-                    it.time.dayOfMonth == LocalDate.now().minusDays(5 ).dayOfMonth
+                    it.time.dayOfMonth == LocalDateTime.now().minusDays(1).dayOfMonth
                 }
                 .sortedBy { it.time.hour }
                 .also {
